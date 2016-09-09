@@ -15,7 +15,7 @@ for link in soup.find_all('a'):
     if url is not None and 'wiki' in url:
         urls.append(url)
 
-file = open("o.txt", "w")
+file = open("o.html", "w")
 
 
 pretty = soup.prettify().encode('utf-8')
