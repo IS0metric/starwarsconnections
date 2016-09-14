@@ -4,14 +4,20 @@ import requests
 
 # Luke Skywalker's wookieepedia page url
 luke_url = "http://starwars.wikia.com/wiki/Luke_Skywalker"
+nien_url = "http://starwars.wikia.com/wiki/Nien_Nunb"
+endor_url = "http://starwars.wikia.com/wiki/Battle_of_Endor"
 shuttle_url = "http://starwars.wikia.com/wiki/Lambda-class_T-4a_shuttle"
 
 
 def request_soup(url):
     """Given a url, requests the page content and returns the soup"""
-    page = requests.get(url)
-    content = page.content
-    soup = BeautifulSoup(content, 'html.parser')
+    soup = None
+    try:
+        page = requests.get(url)
+        content = page.content
+        soup = BeautifulSoup(content, 'html.parser')
+    except:
+        print "-- FAILED TO GET SOUP:", url
     return soup
     
 
@@ -31,6 +37,8 @@ def get_links(soup):
     link-dictionary is placed into a list which is returned
     """
     all_links = []
+    if soup is None:
+        return all_links
     for tag in soup.select('p a[href]'):
         if "wiki" in tag['href']:
             link = {
@@ -52,7 +60,7 @@ def check_character(link):
     "character". Sod's law, some non-characters are still slipping through
     """
     soup = request_soup(link['url'])
-    if "wgArticleType=\"character\"," in soup.script.prettify():
+    if soup is not None and "wgArticleType=\"character\"," in soup.script.prettify():
         return True
     return False
 
@@ -69,4 +77,4 @@ def get_connections(url):
 
 
 if __name__ == "__main__":
-    get_connections(luke_url)
+    get_connections(nien_url)
